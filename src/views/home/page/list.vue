@@ -10,12 +10,18 @@
                 <el-table-column prop="name" label="页面名称" width="100" align="center"> </el-table-column>
                 <el-table-column prop="roleName" label="所属权限" width="200" align="center"> </el-table-column>
                 <el-table-column prop="typeName" label="页面类型" width="100" align="center"> </el-table-column>
-                <el-table-column label="按钮设置" align="center" >
+                <el-table-column label="按钮设置" align="left" >
                     <template slot-scope="scope">
-                        <el-button type="text"  icon="el-icon-view" v-for="item in scope.row.buttonName">{{item}}</el-button>
-                        <!-- <el-button type="text" icon="el-icon-edit">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete"  @click="handleClick(scope.row)">删除</el-button> -->
+                        <el-button type="text" class="success"  icon="el-icon-success" v-for="(item,index) in scope.row.buttonName" :key="index">{{item}}</el-button>
                         
+                        
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-view" @click="handleView(scope.row.id)">查看</el-button>
+                        <el-button type="text" icon="el-icon-delete"  @click="handleDel(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -42,7 +48,17 @@ export default {
             }
         },
         methods: {
-             handleClick(row) {
+            handleEdit(id) {
+                console.log(id);
+                let path = '/page/edit?id='+ id
+                 this.$router.push(path)
+            },
+            handleView(id) {
+               console.log(id);
+                let path = '/page/view?id='+ id
+                 this.$router.push(path)
+            },
+            handleDel(row) {
                 console.log(row);
             },
             handleCurrentChange(e){
@@ -140,5 +156,8 @@ export default {
     .table{
         width: 100%;
         font-size: 14px;
+    }
+    .success i{
+        color:#1abb0e;
     }
 </style>

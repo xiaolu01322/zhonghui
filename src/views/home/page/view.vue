@@ -6,29 +6,18 @@
               <el-form  :model="ruleForm" class="demo-form-inline" :label-position="labelPosition" label-width="110px" >
                 
                 <el-form-item label="页面名称">
-                    <!-- <el-input v-model="ruleForm.user" placeholder="请输入页面名称"></el-input> -->
-                    <div>123</div>
+                    <div>{{ruleForm.name}}</div>
                 </el-form-item>              
                 <el-form-item label="所属权限">
-                   <div>123</div>
-                    <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="--请选择权限--">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
+                   <div>{{ruleForm.role}}</div>
                 </el-form-item>
                 <el-form-item label="页面类型">
-                   <div>123</div>
-                    <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="--请选择页面类型--">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
+                   <div>{{ruleForm.ify}}</div>
                 </el-form-item>
                 <el-form-item label="按钮设置">
-                   <div>123</div>
-                    <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="按钮设置">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
+                   <span v-for="(item,i) in ruleForm.btn" :key="i">
+                     {{item}}
+                   </span>
                 </el-form-item>
                
                 <el-form-item>
@@ -44,63 +33,34 @@
 export default {
     data() {
         return {
-            labelPosition: 'right',
-           ruleForm: {
-                user: '',
-                region: '',
-                repaymentMethod: '', // 还款方式
-                repaymentDate: '', //还款日
-                investor: '',//投资方
-            },
-            options: [],
-            value: [],
-            list: [],
-            loading: false,
-            states: ["Alabama", "Alaska", "Arizona",
-            "Arkansas", "California", "Colorado",
-            "Connecticut", "Delaware", "Florida",
-            "Georgia", "Hawaii", "Idaho", "Illinois",
-            "Indiana", "Iowa", "Kansas", "Kentucky",
-            "Louisiana", "Maine", "Maryland",
-            "Massachusetts", "Michigan", "Minnesota",
-            "Mississippi", "Missouri", "Montana",
-            "Nebraska", "Nevada", "New Hampshire",
-            "New Jersey", "New Mexico", "New York",
-            "North Carolina", "North Dakota", "Ohio",
-            "Oklahoma", "Oregon", "Pennsylvania",
-            "Rhode Island", "South Carolina",
-            "South Dakota", "Tennessee", "Texas",
-            "Utah", "Vermont", "Virginia",
-            "Washington", "West Virginia", "Wisconsin",
-            "Wyoming"]
+          labelPosition: 'right',
+          ruleForm: {
+              name:'',
+              role:'',
+              ify:'',
+              btn:''
+          },
+           
         }
     },
-     mounted() {
-      this.list = this.states.map(item => {
-        return { value: item, label: item };
-      });
-    },
+    
     methods: {
       goBack() {
         return this.$router.go(-1);
       },
-      onSubmit() {
-        console.log('submit!');
-      },
-       remoteMethod(query) {
-        if (query !== '') {
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.options = this.list.filter(item => {
-              return item.label.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1;
-            });
-          }, 200);
-        } else {
-          this.options = [];
-        }
-      }
+      
+    },
+    created(){
+      let id = this.$route.query.id
+        this.$fetch('/page/detail',{id:id}).then(res=>{
+          console.log(res)
+          if(res.status == 200){
+            this.ruleForm.name = res.body.name  //页面名称
+            this.ruleForm.role = res.body.roleName //所属权限
+            this.ruleForm.ify = res.body.typeName //页面类型
+            this.ruleForm.btn = res.body.buttonName
+          }
+        })
     }
 }
 </script>

@@ -2,17 +2,16 @@
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo left-sidebar-menu"
-      @open="handleOpen"
-      @close="handleClose">
+       @select="handleSelect">
       <el-submenu index="1">
         <template slot="title">
           <i class="el-icon-folder-add"></i>
           <span>房贷业务</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="1-1">产品管理</el-menu-item>
-          <el-menu-item index="1-2">流程配置</el-menu-item>
-          <el-menu-item index="1-3">页面管理</el-menu-item>
+          <el-menu-item index="/app/list">产品管理</el-menu-item>
+          <el-menu-item index="/process/list">流程配置</el-menu-item>
+          <el-menu-item index="/page/list">页面管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       
@@ -23,12 +22,11 @@
 <script>
     export default {
         methods: {
-           handleOpen(key, keyPath) {
+           
+            handleSelect(key, keyPath) {
                 console.log(key, keyPath);
-            },
-            handleClose(key, keyPath) {
-                console.log(key, keyPath);
-            }
+                return this.$router.push(key)
+           },
         }
     }
 </script>
