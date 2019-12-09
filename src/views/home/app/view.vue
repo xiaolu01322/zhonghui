@@ -7,81 +7,59 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="产品名称">
-                            <!-- <el-input v-model="ruleForm.user" placeholder="请输入产品名称"></el-input> -->
-                            <div>123</div>
+                            <div>{{ruleForm.productName}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="产品名称(内部)">
-                            <!-- <el-input v-model="ruleForm.user" placeholder="请输入产品名称"></el-input> -->
-                            <div>123</div>
+                            <div>{{ruleForm.productCode}}</div>
                         </el-form-item>
                     </el-col>
                 </el-row>               
                 <el-form-item label="资金方">
-                    <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="--请选择资金方--">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
-                    <div>123</div>
+                    
+                    <div>{{ruleForm.fundName}}</div>
                 </el-form-item>
                 <el-form-item label="选择城市">
-                    <!-- <el-select v-model="ruleForm.investor" placeholder="活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
-                    <div>123</div>
+                    
+                    <div>{{ruleForm.cityName}}</div>
                 </el-form-item>
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="还款方式">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
-                            <div>123</div>
+                            
+                            <div>{{repaymentTypes[ruleForm.repaymentType]}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="按年归本比例">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>% -->
-                            <div>123</div>
+                            <div>{{ruleForm.repaymentPrincipalRate}}</div>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-form-item label="放款通道">
-                    <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input> -->
-                    <div>123</div>
+                    <div>{{ruleForm.channelName}}</div>
                 </el-form-item>
                 <el-form-item label="产品期限">
-                    <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                    <el-option label="区域一" value="shanghai"></el-option>
-                    <el-option label="区域二" value="beijing"></el-option>
-                    </el-select> -->
-                    <div>123</div>
-                </el-form-item>
+                    <span v-for="(item,index) in ruleForm.period" :key="index">
+                        {{periods[Number(item)]}}
+                    </span>
+                  </el-form-item>
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="还款日">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
-                            <div>123</div>
+                            
+                            <div>{{repaymentDateTypes[ruleForm.repaymentDateType]}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="固定日为">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>% -->
-                            <div>123</div>
+                            <div>{{ruleForm.repaymentDate}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="是否补齐">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
+                           
                             <div>123</div>
                         </el-form-item>
                     </el-col>
@@ -89,57 +67,44 @@
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="计息方式">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
-                            <div>123</div>
+                            
+                            <div>{{interestTypes[ruleForm.interestType]}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="年计息天数">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
-                            <div>123</div>
+                            
+                            <div>{{ruleForm.interestDays}}</div>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="违约金">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>% -->
-                            <div>123%</div>
+                            <div>{{ruleForm.breakContractRate}}%</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="收取违约金期数">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>期 -->
-                            <div>123期</div>
+                            <div>{{ruleForm.breakContractPeriod}}期</div>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="罚息利率">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>% -->
-                            <div>123</div>
+                            <div>{{ruleForm.defaultInterestRate}}%</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="罚息基数">
-                            <!-- <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select> -->
-                            <div>123</div>
+                            
+                            <div>{{defaultInterestTypes[ruleForm.defaultInterestType]}}</div>
                         </el-form-item>
                     </el-col>
                     <el-col :span="8">
                         <el-form-item label="宽限期">
-                            <!-- <el-input v-model="ruleForm.user" placeholder=""></el-input>天 -->
-                            <div>123</div>
+                            <div>{{ruleForm.gracePeriod}}天</div>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -158,22 +123,27 @@ export default {
     data() {
         return {
             labelPosition: 'right',
-           ruleForm: {
-                user: '',
-                region: '',
-                repaymentMethod: '', // 还款方式
-                repaymentDate: '', //还款日
-                investor: '',//投资方
-            }
+            ruleForm: {},
+            repaymentTypes:['先息后本','按月付息','气球贷'],
+            periods:['6期','12期','24期','36期','48期','60期'],
+            repaymentDateTypes:['非固定还款日','固定还款日'],
+            interestTypes:['算头不算尾','算头又算尾'],
+            // interestDayss: ['360','365'],
+            defaultInterestTypes:['剩余贷款金额','贷款金额']
         }
     },
     methods: {
       goBack() {
         return this.$router.go(-1);
       },
-      onSubmit() {
-        console.log('submit!');
-      }
+      
+    },
+    created(){
+        let id = this.$route.query.id
+        this.$fetch('/product/detail',{id:id}).then(res => {
+            console.log(res,123123)
+            this.ruleForm = res.body
+        })
     }
 }
 </script>

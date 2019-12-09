@@ -2,7 +2,7 @@
     <div class="content">
         <div class="container home-container">
            <div class="handle-box">
-                <el-form :inline="true" :model="formInline" class="demo-form-inline">
+                <el-form :inline="true" :model="formInline" class="demo-form-inline" style="text-align: left;">
                     <el-form-item label="产品名称">
                         <el-input v-model="formInline.user" placeholder="审批人"></el-input>
                     </el-form-item>
@@ -31,23 +31,49 @@
             </div>    
             <div class="handle-box">
                 <el-button type="text" class="list_title">产品列表</el-button>
-                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10">新建产品</el-button>           
+                <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新建产品</el-button>           
             </div>
             <el-table :data="tableData" border class="table table-container-home" >
-                <el-table-column prop="productName" label="产品名称" width="100" align="center"> </el-table-column>
-                <el-table-column prop="nameInside" label="产品名称（内部）" width="200" align="center"> </el-table-column>
-                <el-table-column prop="capitalSide" label="资金方" width="100" align="center"> </el-table-column>
+                <el-table-column prop="productName" label="产品名称" width="150" align="center" fixed="left">
+                    <template slot-scope="scope">
+                        <span>{{(scope.row.productName.split('-')[0])}}</span>
+                    </template>
+                 </el-table-column>
+                <el-table-column prop="productName" label="产品名称（内部）" width="200" align="center"> </el-table-column>
+                <el-table-column prop="fundName" label="资金方" width="100" align="center"> </el-table-column>
                 <el-table-column prop="channelName" label="放款通道" width="100" align="center"> </el-table-column>
-                <el-table-column prop="repaymentType" label="还款方式" width="100" align="center"> </el-table-column>
-                <el-table-column prop="repaymentDate" label="还款日" width="200" align="center"> </el-table-column>
-                <el-table-column prop="period" label="借款周期" width="300" align="center"> </el-table-column>
-                <el-table-column prop="defaultInterestRate" label="罚息年利率" width="100" align="center"> </el-table-column>
-                <el-table-column prop="breakContractRate" label="违约金比例" width="100" align="center"> </el-table-column>
-                <el-table-column label="操作" align="center">
+                <el-table-column prop="repaymentType" label="还款方式" width="100" align="center"> 
+                    <template slot-scope="scope">
+                        <span>{{repaymentTypeArr[scope.row.repaymentType]}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="repaymentDateType" label="还款日" width="100" align="center"> 
+                    <template slot-scope="scope">
+                        <span>{{repaymentDateTypeArr[scope.row.repaymentDateType]}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="period" label="借款周期" width="300" align="center"> 
+                    <template slot-scope="scope">
+                        <span v-for="(item,index) in scope.row.period.split(',')" :key="index">
+                            {{periodArr[Number(item)]}}、
+                        </span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="defaultInterestRate" label="罚息年利率（%）" width="100" align="center">
+                        <template slot-scope="scope">
+                            <span>{{scope.row.defaultInterestRate*100}}</span>
+                        </template>
+                 </el-table-column>
+                <el-table-column prop="breakContractRate" label="违约金比例（%）" width="100" align="center">
+                     <template slot-scope="scope">
+                            <span>{{scope.row.breakContractRate*100}}</span>
+                        </template>
+                 </el-table-column>
+                <el-table-column label="操作" align="center" width="200" fixed="right">
                     <template  slot-scope="scope">
-                        <el-button type="text" icon="el-icon-view" @click="goView(scope.row.id)">查看</el-button>
-                        <el-button type="text" icon="el-icon-edit">编辑</el-button>
-                        <el-button type="text" icon="el-icon-delete"  @click="open">删除</el-button>
+                        <el-button type="text" icon="el-icon-view" @click="handleView(scope.row.id)">查看</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleView(scope.row.id)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-delete" >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -63,54 +89,35 @@
 export default {
      data() {
             return {
-                tableData: [
-                    {
-                       name:'小微E贷',
-                       nameInside:'石景山支行-小微E贷标砖贷',
-                       capitalSide:'石银',
-                       lendingChannel:'石银',
-                       repaymentMethod:'先息后本',
-                       repaymentDate:'固定日',
-                       borrowingCycle:'6期、12期、36期、 60期',
-                       adiRate:'24',
-                       robFees:'0.5',
-                    }
-                ],
+                tableData: [],
                 formInline: {
                     user: '',
                     region: '',
                     repaymentMethod: '', // 还款方式
                     repaymentDate: '', //还款日
                     investor: '',//投资方
-                }
+                },
+                repaymentTypeArr:['先息后本','按月付息','气球贷'],
+                repaymentDateTypeArr:['非固定','固定'],
+                periodLength:0,
+                periodArr:["6期","12期","24期","36期","48期","60期"]
+            
             }
         },
         methods: {
             onSubmit() {
                 console.log('submit!');
             },
-            goView(id){
+            handleView(id){
                 console.log(id)
                 let path = '/app/view?id='+id;
                 this.$router.push(path)
             },
-            open() {
-                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-                }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                });
-                }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
-                });          
-                });
+            handleAdd(){
+                let path = '/app/add';
+                this.$router.push(path)
             },
+           
              getData() {
                 let params = {
                     pageIndex: 1,
@@ -118,8 +125,8 @@ export default {
                 };
                 this.$fetch('/product/list',params)
                 .then((res) => {
+                    
                     this.tableData = res.body
-                   
                 })
             },
         },
