@@ -140,6 +140,7 @@ export default {
 
             this.ifyValue = res.body.typeList
             this.btn = res.body.buttonList
+            console.log(this.btn)
           }
         })
         

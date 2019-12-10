@@ -17,7 +17,7 @@
                     </el-col>
                 </el-row>               
                 <el-form-item label="资金方" prop="fund">
-                    <el-select v-model="ruleForm.fund" placeholder="--请选择资金方--">
+                    <el-select v-model="ruleForm.fund" placeholder="--请选择资金方--" @change="selectGetFund">
                         <el-option
                         v-for="item in funds"
                         :key="item.lId"
@@ -26,16 +26,26 @@
                       </el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="选择城市" prop=“city>
-                    <el-select v-model="ruleForm.city" multiple placeholder="--请选择城市--">
-                        <el-option
-                        v-for="item in citys"
-                        :key="item.code"
-                        :label="item.name"
-                        :value="item.code">
-                      </el-option>
-                    </el-select>
-                </el-form-item>
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="选择城市" prop="city">
+                            <el-select v-model="ruleForm.city" filterable multiple placeholder="--请选择城市--" @change="selectGet">
+                                <el-option
+                                v-for="item in citys"
+                                :key="item.code"
+                                :label="item.name"
+                                :value="item.code">
+                            </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                         <el-form-item label="贷款月利率" prop="interestRate">
+                            <el-input v-model="ruleForm.interestRate" placeholder=""></el-input>%
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="还款方式" prop='repaymentType'>
@@ -55,7 +65,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-form-item label="放款通道">
+                <el-form-item label="放款通道" prop="channelName">
                     <el-input v-model="ruleForm.channelName" placeholder=""></el-input>
                 </el-form-item>
                 <el-form-item label="产品期限" prop="period">
@@ -87,15 +97,7 @@
                         <el-form-item label="固定日为">
                             <el-input v-model="ruleForm.repaymentDate" placeholder=""></el-input>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="是否补齐">
-                            <el-select v-model="ruleForm.repaymentMethod" placeholder="活动区域">
-                            <el-option label="区域一" value="shanghai"></el-option>
-                            <el-option label="区域二" value="beijing"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
+                    </el-col>                  
                 </el-row>
                 <el-row>
                     <el-col :span="8">
@@ -185,8 +187,14 @@ export default {
                 city: [
                     { required: true, message: '请选择资城市', trigger: 'blur' }
                 ],
+                interestRate:[
+                    { required: true, message: '请输入贷款月利率', trigger: 'blur' }
+                ],
                 repaymentType:[
                     { required: true, message: '请选择还款方式', trigger: 'blur' }
+                ],
+                channelName:[
+                    { required: true, message: '请输入放款通道', trigger: 'blur' }
                 ],
                 period:[
                     { required: true, message: '请选择产品期限', trigger: 'blur' }
@@ -214,11 +222,14 @@ export default {
                 ]
             },
             labelPosition: 'right',
+            citysNameArr:[],
+            strFundName:'',
             ruleForm: {    
                    name:'',
                    insideName:'',
                    fund:'',
                    city:'',
+                   channelName:'',
                    repaymentDateType:'',
                    repaymentPrincipalRate:'',
                    period:'',
@@ -226,6 +237,7 @@ export default {
                    repaymentDate:'',
                    interestType:'',
                    interestDays:'',
+                   interestRate:'',
                    breakContractRate:'',
                    breakContractPeriod:'',
                    defaultInterestType:'',
@@ -234,19 +246,8 @@ export default {
                 },
             funds:'',//资金方列表
             citys:'',//城市列表
-            repaymentTypes:[{
-                id:0,
-                name:'先息后本'
-            },
-            {
-                id:2,
-                name:'按月付息'
-            },
-            {
-                id:3,
-                name:'气球贷'
-            }],
-            periods:[{id:0,name:'6期'},{id:1,name:'12期'},{id:3,name:'24期'},{id:4,name:'36期'},{id:5,name:'48期'},{id:6,name:'60期'}],
+            repaymentTypes:[{ id:0,name:'先息后本'},{id:2,name:'按月付息' },{id:3,name:'气球贷'}],
+            periods:[{id:0,name:'6期'},{id:1,name:'12期'},{id:2,name:'24期'},{id:3,name:'36期'},{id:4,name:'48期'},{id:5,name:'60期'}],
             repaymentDateTypes:[{id:0,name:'非固定还款日'},{id:1,name:'固定还款日'}],
             interestTypes:[{id:0,name:'算头不算尾'},{id:1,name:'算头又算尾'}],
             interestDayss: [{id:0,name:'360'},{id:1,name:'365'}],
@@ -260,51 +261,63 @@ export default {
       goBack() {
         return this.$router.go(-1);
       },
+      //下拉框多选选中事件
+        selectGet(GUIDArr){//这个vId也就是value值
+           for (let i = 0; i < GUIDArr.length; i++) {
+            let obj = this.citys.find((item) => {
+              return item.code === GUIDArr[i]
+ 
+            })
+            this.$set(this.citysNameArr, i, obj.name)
+            console.log(this.citysNameArr)
+          }
+
+        },
+        //下拉单选选中事件
+        selectGetFund(vId){
+             console.log(vId);
+            let obj = {};
+            obj = this.funds.find((item)=>{//这里的funds就是上面遍历的数据源
+                return item.lId === vId;//筛选出匹配数据
+            });
+            this.strFundName = obj.strFundName
+            console.log(obj.strFundName);//我这边的strFundName就是对应label的
+        },
       submitForm(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
+                console.log(this.ruleForm.fund,1231)
                 const params = new FormData();
                 params.append("pageJson", JSON.stringify({
-                //    productName:this.ruleForm.name,
-                //    fundName:this.ruleForm.fund,
-                //    cityCode:this.ruleForm.city,
-                //    repaymentDateType:this.ruleForm.repaymentDateType,
-                //    repaymentPrincipalRate:this.ruleForm.repaymentPrincipalRate,
-                //    period:this.ruleForm.period.toString(),
-                //    repaymentDateType:this.ruleForm.repaymentDateType,
-                //    repaymentDate:this.ruleForm.repaymentDate,
-                //    interestType:this.ruleForm.interestType,
-                //    interestDays:this.ruleForm.interestDays,
-                //    breakContractRate:this.ruleForm.breakContractRate,
-                //    breakContractPeriod:Number(this.ruleForm.breakContractPeriod),
-                //    defaultInterestType:this.ruleForm.defaultInterestType,
-                //    defaultInterestRate:this.ruleForm.defaultInterestRate,
-                //    gracePeriod:Number(this.ruleForm.gracePeriod)
-                    "productName":this.ruleForm.name,
-                    "cityCode":this.ruleForm.city,
-                    "cityName":this.ruleForm.city,
-                    "fundName":this.ruleForm.fund,
-                    "fundCode":"1",
-                    "channelName":"民生信托",
-                    "period":"1,2,3,4,5",
-                    "repaymentType":1,
-                    "repaymentPrincipalRate":0.5,
-                    "repaymentDateType":1,
-                    "repaymentDate":"25",
-                    "interestType":1,
-                    "interestDays":"1",
-                    "breakContractPeriod":0,
-                    "breakContractRate":1,
-                    "defaultInterestType":0,
-                    "defaultInterestRate":0.108,
-                    "gracePeriod":1,
-                    "state":0
+                   
+                    'productName':this.ruleForm.name,
+                    'fundName':this.strFundName,
+                    "fundCode":this.ruleForm.fund,
+                    'cityCode':this.ruleForm.city.toString(),
+                    'cityName':this.citysNameArr.toString(),
+                    'channelName':this.ruleForm.channelName,
+                    repaymentType:this.ruleForm.repaymentType,
+                    repaymentDateType:this.ruleForm.repaymentDateType,
+                    repaymentPrincipalRate:Number(this.ruleForm.repaymentPrincipalRate),
+                    period:this.ruleForm.period.toString(),
+                    repaymentDateType:this.ruleForm.repaymentDateType,
+                    repaymentDate:Number(this.ruleForm.repaymentDate),
+                    interestType:this.ruleForm.interestType,
+                    interestDays:this.ruleForm.interestDays,
+                    interestRate:Number(this.ruleForm.interestRate),
+                    breakContractRate:Number(this.ruleForm.breakContractRate),
+                    breakContractPeriod:Number(this.ruleForm.breakContractPeriod),
+                    defaultInterestType:this.ruleForm.defaultInterestType,
+                    defaultInterestRate:Number(this.ruleForm.defaultInterestRate),
+                    gracePeriod:Number(this.ruleForm.gracePeriod)
+
+
                 }))
 
                 this.$post('/product/add',  params).then(res =>{
-                    console.log(res,12312)
+                    
                 if(res.status == 200){
-                        // this.$router.push('/page/list')
+                    this.$router.push('/page/list')
                 }
                 } )
             } else {

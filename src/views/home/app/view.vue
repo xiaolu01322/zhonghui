@@ -20,10 +20,20 @@
                     
                     <div>{{ruleForm.fundName}}</div>
                 </el-form-item>
-                <el-form-item label="选择城市">
+                <el-row>
+                    <el-col :span="8">
+                        <el-form-item label="选择城市">
+                            <div>{{ruleForm.cityName}}</div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item label="贷款月利率">
+                            <div>{{ruleForm.interestRate}}</div>
+                        </el-form-item>
+                    </el-col>
                     
-                    <div>{{ruleForm.cityName}}</div>
-                </el-form-item>
+                </el-row>
+               
                 <el-row>
                     <el-col :span="8">
                         <el-form-item label="还款方式">
@@ -57,12 +67,7 @@
                             <div>{{ruleForm.repaymentDate}}</div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="是否补齐">
-                           
-                            <div>123</div>
-                        </el-form-item>
-                    </el-col>
+                    
                 </el-row>
                 <el-row>
                     <el-col :span="8">

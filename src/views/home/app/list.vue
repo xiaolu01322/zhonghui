@@ -72,7 +72,7 @@
                 <el-table-column label="操作" align="center" width="200" fixed="right">
                     <template  slot-scope="scope">
                         <el-button type="text" icon="el-icon-view" @click="handleView(scope.row.id)">查看</el-button>
-                        <el-button type="text" icon="el-icon-edit" @click="handleView(scope.row.id)">编辑</el-button>
+                        <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
                         <el-button type="text" icon="el-icon-delete" >删除</el-button>
                     </template>
                 </el-table-column>
@@ -109,8 +109,11 @@ export default {
                 console.log('submit!');
             },
             handleView(id){
-                console.log(id)
                 let path = '/app/view?id='+id;
+                this.$router.push(path)
+            },
+            handleEdit(id){
+                let path = '/app/edit?id='+id;
                 this.$router.push(path)
             },
             handleAdd(){
