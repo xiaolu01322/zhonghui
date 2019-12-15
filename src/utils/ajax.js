@@ -12,13 +12,7 @@ var CancelToken = axios.CancelToken,
 	loadingCount = 0,
 	loadingObj;
 
-const APIs = {
-	// 资金方列表
-	'fundInfoList':'/fund-info/list',
-	// 公共首页
-    'pageList': '/page/list',
-    
-}
+
 
 // let isDebug = process.env.NODE_ENV !== 'production';
 
@@ -30,92 +24,15 @@ const APIs = {
  * @param  {Function} fn        回调函数
  * @param  {boolean}   tokenFlag 是否需要携带token参数，为true，不需要；false，需要。一般除了登录，等需要
  */
-const ajax = function (type, url, data, fn, errorfn, noloading) {
-	let datas, config;
-	var source = CancelToken.source();
-	// source.cancel(); //终止请求
 
-	if(typeof data == 'function'){
-		fn = data;
-		data = {};
-	}
-	if(typeof errorfn == 'boolean'){
-		noloading = errorfn;
-		errorfn = null;
-	}
-
-	if (type === 'get') {
-		datas = {
-			params: data
-		};
-		//canceltoken得写在datas后面
-		Object.assign(datas, {cancelToken: source.token});
-
-	} else {
-		// post 还不能取消
-		// datas = Qs.stringify(data);
-		datas = data;
-		config = { cancelToken: source.token }; //also see: https://github.com/axios/axios/issues/1074
-		// config.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-		config.headers = {'Content-Type': 'multipart/form-data'}
-		// config.headers['Content-Type'] = 'application/json';
-	}
-	if(!noloading){
-		loadingCount++
-		if(!loadingObj){
-			loadingObj = Loading.service({
-				// lock: true,
-				text: '',
-				spinner: 'el-icon-loading',
-				background: 'rgba(0, 0, 0, 0)'
-			})
-		}
-	}
-
-	Vue.axios[type](url, datas, config).then((res) => {
-        loadingCount--
-		if(loadingCount == 0 && loadingObj){
-			loadingObj.close()
-			loadingObj = null
-		}
-
-		if (Number(res.data.code) === 0) {
-			fn && fn(res.data.data)
-		} else {
-            if(Number(res.data.code) === 2000) {
-                this.$store.commit('$_removeStorage');
-                this.$router.push({path:'/login'});
-            } else {
-                errorfn && errorfn(res.data.message);
-            }
-        }
-	}).catch((err) => {
-		loadingObj.close();
-		loadingObj = null;
-		let msg;
-		if(err.message && err.message.indexOf('timeout') > -1){
-			msg = '查询需要的计算量过大，请适当减少数据量或减少查询维度';
-		}else {
-			msg = '服务错误，请刷新重试';
-		}
-		if(!axios.isCancel(err)){
-			this.$alert(msg);
-		}
-
-		// errr时 重置loading相关
-		loadingObj && loadingObj.close();
-		loadingObj = null;
-		loadingCount = 0;
-	})
-	return source;
-}
 
 axios.interceptors.request.use(
 	config => {
 		if(config.method == 'post'){
-			config.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-			// config.headers['Content-Type'] = 'multipart/form-data';
+			// config.headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+			config.headers['Content-Type'] = 'application/json';
 		}
+
 
 		return config
 	},
@@ -182,3 +99,4 @@ export function fetch(url,params={}){
 			})
 	 })
    }
+

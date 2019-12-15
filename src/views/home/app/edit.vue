@@ -328,9 +328,9 @@ export default {
 
                 this.$post('/product/edit',  params).then(res =>{
                     
-                if(res.status == 200){
-                    this.$router.push('/app/list')
-                }
+                    if(res.status == 200){
+                        this.$router.push('/app/list')
+                    }
                 } )
             } else {
                 console.log('error submit!!');

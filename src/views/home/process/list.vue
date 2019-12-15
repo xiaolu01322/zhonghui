@@ -25,45 +25,20 @@
                     <el-button type="text" class="list_title">流程配置</el-button>
                 </div>
                 <div>
-                    <el-row>
-                        <el-button type="info" plain>预约下户</el-button>
-                        <i class="el-icon-right"></i>
-                        <el-button type="info" plain>下户审核</el-button>
-                        <i class="el-icon-right"></i>
-                        <el-button type="info" plain>下户分配</el-button>
-                        <i class="el-icon-right"></i>
-                        <el-button type="info" plain>前端</el-button>
-                        <i class="el-icon-right"></i>
-                        <el-button type="info" plain>初审分单</el-button>
-                        <i class="el-icon-right"></i>
-                        <el-button type="info" plain>审批初审</el-button>
-                    </el-row>
-                    <el-row style="text-align:right;">
-                        <i class="el-icon-bottom"></i>
-                    </el-row>
-                    <el-row  style="text-align:right;">
-                        <i class="el-icon-plus" @click="regionFirst" style="border:1px red solid;border-radius:50%;color:red;"></i>
-                    </el-row>
-                    <el-row  style="text-align:right;">
-                        <i class="el-icon-bottom"></i>
-                    </el-row>
-                    <el-row  style="text-align:right;">
-                        <el-button type="info" plain>还款确认</el-button>
-                        <i class="el-icon-back"></i>
-                        <el-button type="info" plain>放款确认</el-button>
-                        <i class="el-icon-back"></i>
-                        <i class="el-icon-plus"  @click="regionSecond"   style="border:1px red solid;border-radius:50%;color:red;"></i>
-                        <i class="el-icon-back"></i>
-                        <el-button type="info" plain>面签确认</el-button>
-                        <i class="el-icon-back"></i>
-                        <el-button type="info" plain>确认要款</el-button>
-                    </el-row>
-                    <el-row></el-row>
-
+                   <el-row class="odd">
+                       <div>
+                           <span>预约下户</span>    
+                       </div>
+                   </el-row>
+                    <el-row class="even">
+                       <div>
+                           <span>预约下户</span>    
+                       </div>
+                   </el-row>
                 </div>
                     
             </div>  
-            <div class="showModalBoxBg">
+            <div class="showModalBoxBg first" v-if="formflag == 'first'">
                  <div class="showModalBox">
                     <el-table :data="regionData" border class="table table-container-home" >
                         <el-table-column label="选择" align="center" width="100" >
@@ -81,12 +56,36 @@
                         </el-table-column>
                         
                     </el-table>
-                    <div>
-                        <button>取消</button>
-                        <button @click="onSubmit">保存</button>
+                    <div style="margin-top:20px;">
+                        <el-button type="primary" plain @click="quit">取消</el-button>
+                        <el-button type="primary" plain @click="onSubmitFirst">保存</el-button>
                     </div>
                  </div>
             </div>  
+            <div class="showModalBoxBg second" v-if="formflag == 'second'">
+                 <div class="showModalBox">
+                    <el-table :data="regionData" border class="table table-container-home" >
+                        <el-table-column label="选择" align="center" width="100" >
+                            <template slot-scope="scope">
+                                <el-checkbox label="选择" @change="checkboxChange(scope.row.id)"></el-checkbox>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="name" label="页面名称" width="100" align="center"> </el-table-column>
+                        <el-table-column prop="roleName" label="所属权限" width="100" align="center"> </el-table-column>
+                        <el-table-column prop="typeName" label="页面类型" width="100" align="center"> </el-table-column>
+                        <el-table-column label="按钮设置" align="left" width="140">
+                            <template slot-scope="scope">
+                                <el-button type="text" class="success"  icon="el-icon-success" v-for="(item,index) in scope.row.buttonName" :key="index">{{item}}</el-button>
+                            </template>
+                        </el-table-column>
+                        
+                    </el-table>
+                     <div style="margin-top:20px;">
+                        <el-button type="primary" plain @click="quit">取消</el-button>
+                        <el-button type="primary" plain @click="onSubmitSecond">保存</el-button>
+                    </div>
+                 </div>
+            </div> 
         </div>
     </div>
 </template>
@@ -101,7 +100,10 @@ export default {
                 investor:'',
                 regionData:[],
                 selObjArr:[],
-                flag:true
+                formflag:'',
+                region1:[],
+                region2:[],
+
                 
             }
         },
@@ -116,12 +118,26 @@ export default {
                 
             },
             regionFirst(){
-                // console.log(this.regionData)
-                this.flag = true
+                this.formflag = 'first'
+                this.selObjArr=[];
             },
             regionSecond(){
-                // console.log(this.regionData)
-                this.flag = false
+                this.formflag = 'second'
+                this.selObjArr = []
+            },
+            quit(){
+                this.formflag = '';
+                this.selObjArr = [];
+            },            
+            onSubmitFirst(){
+                this.region1 = this.selObjArr
+                this.formflag = '';
+                this. selObjArr = [];
+            },
+            onSubmitSecond(){
+                this.region2 = this.selObjArr
+                this.formflag = '';
+                this. selObjArr = [];
             },
             checkboxChange(vId){
                 //删除
@@ -147,9 +163,17 @@ export default {
  
                  
             },
-             
-            onSubmit(vId){
-               
+            pullFn(){
+                const params = {
+                    'fundCode' : this.formInline.investor,
+                    'region1':this.region1,
+                    'region2':this.region2
+                }
+
+                this.$post('/process/edit',  params).then(res =>{
+                    
+                   console.log(res,12312312312)
+                } )
             },
             getData() {
                 this.$fetch('/fund-info/list')
@@ -256,5 +280,8 @@ export default {
     }
     .showModalBox .tt{
         text-align: left;
+    }
+    .regionAdd{
+        text-align: right;
     }
 </style>
