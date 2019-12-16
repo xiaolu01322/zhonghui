@@ -1,14 +1,14 @@
 <template>
-    <el-menu class="header" mode="horizontal"  background-color="#0A1731" text-color="#fff" active-text-color="#20a0ff">
+    <el-menu class="header" mode="horizontal"  background-color="#0A1731" text-color="#fff" active-text-color="#20a0ff" :default-active="$route.path" @select="handleSelect">
         <div class="logo"><a href="/"><img src="../../../assets/img/dev-logo.png" width="278"></a></div>
         <div class="header-right">
             <div class="header-user-con">
-                <el-dropdown class="user-name" >
+                <el-dropdown class="user-name" trigger="click" @command="handleCommand">
                     <span class="el-dropdown-link">
-                        {{name}} <i class="el-icon-caret-bottom"></i>
+                        {{username}} <i class="el-icon-caret-bottom"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item divided >退出登录</el-dropdown-item>
+                        <el-dropdown-item divided  command="loginout">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </div>
@@ -25,14 +25,29 @@
                 name: '众慧',
             }
         },
-        computed:{
-          
+         computed:{
+            username(){
+                let user = JSON.parse(localStorage.getItem('user'))
+            
+                return user ? user.username:  this.$router.push('/login');
+            }
         },
         created(){
             this.path = this.$route.path;
         },
         methods:{
-           
+           // 用户名下拉菜单选择事件
+            handleCommand(command) {
+                if(command == 'loginout'){
+                   
+                        this.$store.commit("$_removeStorage");
+                        this.$router.push('/login');
+                  
+                }
+            },
+           handleSelect(key, keyPath) {
+                return this.$router.push(key)
+           },
         }
     }
 </script>

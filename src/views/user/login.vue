@@ -3,17 +3,14 @@
     <div class="headers">
       <div class="logo">
         <a href="/">
-          <!-- <img src="../../assets/img/logo.png" /> -->
+         
         </a>
       </div>
       <div class="txt-login">
-        <!-- <img src="../../assets/img/login_text_plain_top.png" />
-        <img src="../../assets/img/login_text_plain_bottom.png" /> -->
+        
       </div>
       <div class="left_bottom_text_plain">
-        <!-- <p>合作联系邮箱： pub-support@domob.cn</p>
-        <p>多盟睿达科技(中国)有限公司</p>
-        <p>COPYRIGHT©DOMOB.CN</p> -->
+       
       </div>
     </div>
 
@@ -82,23 +79,13 @@ export default {
             };
             this.$post('/user/login',params).then(res => {
               console.log(res)
+              if(res.status == 200){
+                 this.$store.commit("$_setStorage", {username: this.ruleForm.username});
+                 this.$message.success("登录成功");
+                 this.$router.push('/app/list')
+              }
             })
-            // this.__postData(
-            //   "login",
-            //   params,
-            //   res => {
-            //     this.$message.success("登录成功");
-            //     this.$store.commit("$_setStorage", res);
-            //     if (res.status == 0) {
-            //       this.$router.push("/app/list");
-            //     } else {
-            //       this.$router.push("/user/active?status=0");
-            //     }
-            //   },
-            //   errmsg => {
-            //     this.$message.error(errmsg);
-            //   }
-            // );
+            
           }
         });
       },
