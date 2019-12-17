@@ -10,11 +10,7 @@
                             <el-input v-model="ruleForm.productName" placeholder="请输入产品名称"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="产品名称(内部)" >
-                            <el-input v-model="ruleForm.insideName" placeholder="请输入产品名称"></el-input>
-                        </el-form-item>
-                    </el-col>
+                    
                 </el-row>               
                 <el-form-item label="资金方" prop="fundName">
                     <el-select v-model="ruleForm.fundName" placeholder="--请选择资金方--" @change="selectGetFund">
@@ -161,9 +157,9 @@
                 </el-row>
                 
                 <el-form-item>
-                    <el-button type="primary">返回</el-button>
+                    <el-button type="primary" @click="quit">返回</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                    <el-button type="primary" >提交</el-button>
+                    <!-- <el-button type="primary" >提交</el-button> -->
                 </el-form-item>
               </el-form>
            </div>
@@ -262,6 +258,9 @@ export default {
       goBack() {
         return this.$router.go(-1);
       },
+      quit(){
+          this.$router.push('/page/list')
+      },
       arrayInt(arr){
         let arrInt = []
         for(var a=0;a<arr.length;a++){
@@ -357,6 +356,7 @@ export default {
          // 获取城市
         this.$fetch('/city/list').then(res =>{
             this.citys = res.body
+            this.citys50 = res.body.slice(0, 50)
         })
     }
 }

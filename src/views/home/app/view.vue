@@ -10,11 +10,7 @@
                             <div>{{ruleForm.productName}}</div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="产品名称(内部)">
-                            <div>{{ruleForm.productCode}}</div>
-                        </el-form-item>
-                    </el-col>
+                   
                 </el-row>               
                 <el-form-item label="资金方">
                     

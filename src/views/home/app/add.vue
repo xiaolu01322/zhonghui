@@ -10,11 +10,7 @@
                             <el-input v-model="ruleForm.name" placeholder="请输入产品名称"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="8">
-                        <el-form-item label="产品名称(内部)" >
-                            <el-input v-model="ruleForm.insideName" placeholder="请输入产品名称"></el-input>
-                        </el-form-item>
-                    </el-col>
+                    
                 </el-row>               
                 <el-form-item label="资金方" prop="fund">
                     <el-select v-model="ruleForm.fund" placeholder="--请选择资金方--" @change="selectGetFund">
@@ -160,9 +156,9 @@
                 </el-row>
                 
                 <el-form-item>
-                    <el-button type="primary">返回</el-button>
+                    <el-button type="primary" @click="quit">返回</el-button>
                     <el-button type="primary" @click="submitForm('ruleForm')">保存</el-button>
-                    <el-button type="primary" >提交</el-button>
+                    <!-- <el-button type="primary" >提交</el-button> -->
                 </el-form-item>
               </el-form>
            </div>
@@ -260,6 +256,9 @@ export default {
     methods: {
       goBack() {
         return this.$router.go(-1);
+      },
+      quit(){
+          this.$router.push('/page/list')
       },
       //下拉框多选选中事件
         selectGet(GUIDArr){//这个vId也就是value值

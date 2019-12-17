@@ -4,24 +4,37 @@
            <div class="handle-box">
                 <el-form :inline="true" :model="formInline" class="demo-form-inline" style="text-align: left;">
                     <el-form-item label="产品名称">
-                        <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                        <el-input v-model="formInline.productName" placeholder="产品名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="还款方式">
-                        <el-select v-model="formInline.repaymentMethod" placeholder="还款方式">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
+                    <el-form-item label="还款方式" >
+                        <el-select v-model="formInline.repaymentType" placeholder="请选择还款方式">
+                        <el-option
+                            v-for="item in repaymentTypes"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="选择资方">
-                        <el-select v-model="formInline.investor" placeholder="活动区选择资方域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
+                     <el-form-item label="资金方">
+                        <el-select v-model="formInline.fundCode" placeholder="--请选择资金方--">
+                            <el-option
+                            v-for="item in funds"
+                            :key="item.lId"
+                            :label="item.strFundName"
+                            :value="item.lId">
+                        </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="还款日">
-                        <el-select v-model="formInline.repaymentDate" placeholder="还款日">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
+                    <el-form-item label="还款日" >
+                        <el-select v-model="formInline.repaymentDate" placeholder="请选择还款日期类型">
+                            <el-option
+
+                            v-for="item in repaymentDateTypes"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -33,13 +46,8 @@
                 <el-button type="text" class="list_title">产品列表</el-button>
                 <el-button type="primary" icon="el-icon-plus" class="handle-del mr10" @click="handleAdd">新建产品</el-button>           
             </div>
-            <el-table :data="tableData" border class="table table-container-home" >
-                <el-table-column prop="productName" label="产品名称" width="150" align="center" fixed="left">
-                    <template slot-scope="scope">
-                        <span>{{(scope.row.productName.split('-')[0])}}</span>
-                    </template>
-                 </el-table-column>
-                <el-table-column prop="productName" label="产品名称（内部）" width="200" align="center"> </el-table-column>
+            <el-table :data="tableData" border class="table table-container-home" >               
+                <el-table-column prop="productName" label="产品名称" width="200" align="center"> </el-table-column>
                 <el-table-column prop="fundName" label="资金方" width="100" align="center"> </el-table-column>
                 <el-table-column prop="channelName" label="放款通道" width="100" align="center"> </el-table-column>
                 <el-table-column prop="repaymentType" label="还款方式" width="100" align="center"> 
@@ -91,21 +99,36 @@ export default {
             return {
                 tableData: [],
                 formInline: {
-                    user: '',
-                    region: '',
-                    repaymentMethod: '', // 还款方式
+                    productName: '',
+                    repaymentType: '', // 还款方式
                     repaymentDate: '', //还款日
-                    investor: '',//投资方
+                    fundCode: '',//投资方
                 },
                 repaymentTypeArr:['先息后本','按月付息','气球贷'],
                 repaymentDateTypeArr:['非固定','固定'],
                 periodLength:0,
-                periodArr:["6期","12期","24期","36期","48期","60期"]
+                periodArr:["6期","12期","24期","36期","48期","60期"],
+                repaymentTypes:[{ id:0,name:'先息后本'},{id:2,name:'按月付息' },{id:3,name:'气球贷'}],
+                repaymentDateTypes:[{id:0,name:'非固定还款日'},{id:1,name:'固定还款日'}],
+                funds:[],
             
             }
         },
         methods: {
             onSubmit() {
+                let params = {
+                     productName: this.formInline.productName,
+                    repaymentType: this.formInline.repaymentType, // 还款方式
+                    repaymentDate: this.formInline.repaymentDate, //还款日
+                    fundCode: this.formInline.fundCode,//投资方
+                    pageIndex: 1,
+                    pageSize: 10,
+                };
+                this.$fetch('/product/list',this.formInline)
+                .then((res) => {
+                    console.log(res)
+                    // this.tableData = res.body
+                })
                 console.log('submit!');
             },
             handleView(id){
@@ -130,6 +153,10 @@ export default {
                 .then((res) => {
                     
                     this.tableData = res.body
+                })
+                 // 获取资金方
+                this.$fetch('/fund-info/list').then(res =>{
+                    this.funds = res.body
                 })
             },
         },
