@@ -336,7 +336,7 @@ export default {
                 return false;
             }
         });
-      },
+      },                                                                                                                                                                                              
       
     },
     created(){
@@ -346,8 +346,8 @@ export default {
             this.ruleForm = res.body
             this.ruleForm.fundCode = res.body.fundName
             this.fundName = res.body.fundCode
-            this.ruleForm.city = this.arrayString(res.body.cityCode.split(","))
-            this.ruleForm.period =this.arrayInt(res.body.period.split(","))
+            this.ruleForm.city = res.body.city
+            this.ruleForm.period =res.body.period
         })
         // 获取资金方
         this.$fetch('/fund-info/list').then(res =>{

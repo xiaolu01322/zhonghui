@@ -181,11 +181,6 @@ export default {
             },
             regionFirst(){
                 this.formflag = 'first'
-                // if(this.region1.length>0){
-                //     this.selObjArr = this.region1
-                // }else{
-                //     this.selObjArr = [];
-                // }
                  this.selObjArr = []
             },
             regionSecond(){
@@ -266,11 +261,12 @@ export default {
                 } )
             },
             getData() {
+                //获取资金方
                 this.$fetch('/fund-info/list')
                 .then((res) => {
                     this.investor = res.body
-                    console.log(this.investor,"investor")
                 })
+                //获取所有列表
                  this.$fetch('/page/allList').then(res => {
                     this.regionData = res.body
                 })
