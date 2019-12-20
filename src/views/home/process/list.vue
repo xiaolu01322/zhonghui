@@ -99,10 +99,10 @@
             </div>  
             <div class="showModalBoxBg first" v-if="formflag == 'first'">
                  <div class="showModalBox">
-                    <el-table :data="regionData" border class="table table-container-home" >
+                    <el-table :data="regionData1" border class="table table-container-home" >
                         <el-table-column label="选择" align="center" width="100" >
                             <template slot-scope="scope">
-                                <el-checkbox label="选择" @change="checkboxChangeFirst(scope.row.id)"></el-checkbox>
+                                <el-checkbox label="选择" v-model="scope.row.selected" @change="checkboxChangeFirst(scope.row.id)"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column prop="name" label="页面名称" width="100" align="center"> </el-table-column>
@@ -123,10 +123,10 @@
             </div>  
             <div class="showModalBoxBg second" v-if="formflag == 'second'">
                  <div class="showModalBox">
-                    <el-table :data="regionData" border class="table table-container-home" >
+                    <el-table :data="regionData2" border class="table table-container-home" >
                         <el-table-column label="选择" align="center" width="100" >
                             <template slot-scope="scope">
-                                <el-checkbox  label="选择" @change="checkboxChangeSecond(scope.row.id)"></el-checkbox>
+                                <el-checkbox label="选择" v-model="scope.row.selected" @change="checkboxChangeSecond(scope.row.id)"></el-checkbox>
                             </template>
                         </el-table-column>
                         <el-table-column prop="name" label="页面名称" width="100" align="center"> </el-table-column>
@@ -158,7 +158,8 @@ export default {
                     investor: [],//投资方
                 },
                 investor:'',
-                regionData:[],
+                regionData1:[],
+                regionData2:[],
                 selObjArr:[],
                 formflag:'',
                 region1:[],
@@ -182,10 +183,35 @@ export default {
             regionFirst(){
                 this.formflag = 'first'
                  this.selObjArr = []
+                 for(var i=0; i<this.region1.length;i++){
+                    for(var j=0;j<this.regionData1.length;j++){
+                        if(this.region1[i].id == this.regionData1[j].id){
+                            console.log(111)
+                            this.regionData1[j].selected = true
+                            this.selObjArr.push(this.regionData1[j]) 
+                        }
+                      
+                    }
+                 }
+                
+                console.log(this.selObjArr)
+                
+
+
             },
             regionSecond(){
                 this.formflag = 'second'
-                this.selObjArr = []
+                 this.selObjArr2 = []
+                 for(var i=0; i<this.region2.length;i++){
+                    for(var j=0;j<this.regionData2.length;j++){
+                        if(this.region2[i].id == this.regionData2[j].id){
+                            this.regionData2[j].selected = true
+                            this.selObjArr2.push(this.regionData2[j]) 
+                        }
+                      
+                    }
+                 }
+                
             },
             quit(){
                 this.formflag = '';
@@ -197,9 +223,9 @@ export default {
                 this. selObjArr = [];
             },
             onSubmitSecond(){
-                this.region2 = this.selObjArr
+                this.region2 = this.selObjArr2
                 this.formflag = '';
-                this. selObjArr = [];
+                this. selObjArr2 = [];
             },
             checkboxChangeFirst(vId){
                 //删除
@@ -212,42 +238,66 @@ export default {
                     return item.id === vId;//筛选出匹配数据
                 });
                 this.selObjArr.removeByValue(objDel)
+                
+                //更新视图
+                 this.checkData(this.selObjArr,this.regionData1)
+                 
+                //  // 添加
                 if(!index){
-                     // 添加
-                    let obj = {};
-                    obj = this.regionData.find((item)=>{//这里的funds就是上面遍历的数据源
+                     
+                    let obj = {};         
+                    obj = this.regionData1.find((item)=>{//这里的funds就是上面遍历的数据源
                         return item.id === vId;//筛选出匹配数据
                     });
                     this.selObjArr.push(obj) 
+                     //更新视图
+                    this.checkData(this.selObjArr,this.regionData1)
                 }
-
-                console.log(this.selObjArr,1231231231)
- 
                  
             },
             checkboxChangeSecond(vId){
-                //删除
+                 //删除
                 let index = 0;
                 let objDel = {};
-                objDel = this.selObjArr.find((item)=>{//这里的funds就是上面遍历的数据源
+                objDel = this.selObjArr2.find((item)=>{//这里的funds就是上面遍历的数据源
                     if (item.id === vId){
                         index++
                     }
                     return item.id === vId;//筛选出匹配数据
                 });
-                this.selObjArr.removeByValue(objDel)
+                this.selObjArr2.removeByValue(objDel)
+                
+                //更新视图
+                 this.checkData(this.selObjArr2,this.regionData2)
+                 
+                //  // 添加
                 if(!index){
-                     // 添加
-                    let obj = {};
-                    obj = this.regionData.find((item)=>{//这里的funds就是上面遍历的数据源
+                     
+                    let obj = {};         
+                    obj = this.regionData2.find((item)=>{//这里的funds就是上面遍历的数据源
                         return item.id === vId;//筛选出匹配数据
                     });
-                    this.selObjArr.push(obj) 
-                }
-
-                console.log(this.selObjArr,1231231231)
- 
+                    this.selObjArr2.push(obj) 
+                     //更新视图
+                    this.checkData(this.selObjArr2,this.regionData2)
+                }   
                  
+            },
+            checkData(selArr,allArr){
+                for(var j=0;j<allArr.length;j++){
+                        
+                    allArr[j].selected = false
+                    this.$set(allArr, j, allArr[j]) 
+                }
+               for(var i=0; i<selArr.length;i++){
+                    for(var j=0;j<allArr.length;j++){
+                        if(selArr[i].id == allArr[j].id){
+                            allArr[j].selected = true
+                        }
+                        this.$set(allArr, j, allArr[j])
+                      
+                    }
+                 }
             },
             pullFn(){
                 const params = {
@@ -258,6 +308,7 @@ export default {
 
                 this.$post('/process/edit',  params).then(res =>{
                     // console.log(res,12312312312)
+                    this.$message.success("提交成功");
                 } )
             },
             getData() {
@@ -267,8 +318,9 @@ export default {
                     this.investor = res.body
                 })
                 //获取所有列表
-                 this.$fetch('/page/allList').then(res => {
-                    this.regionData = res.body
+                this.$fetch('/page/allList').then(res => {
+                    this.regionData1 = res.body
+                    this.regionData2 = res.body
                 })
             },
         },
