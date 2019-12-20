@@ -86,7 +86,12 @@
                 </el-table-column>
             </el-table>
             <div class="pagination">
-                <el-pagination :page-size="20" layout="prev, pager, next" :total="100">
+                <el-pagination
+                 @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                 :page-size="pageSize"        
+                layout="prev, pager, next"
+                :total="1000">
                 </el-pagination>
             </div>  
         </div>
@@ -97,6 +102,8 @@
 export default {
      data() {
             return {
+                currentPage:1,
+                pageSize:20,
                 tableData: [],
                 formInline: {
                     productName: '',
@@ -143,7 +150,18 @@ export default {
                 let path = '/app/add';
                 this.$router.push(path)
             },
-           
+            handleCurrentChange(e){
+                console.log(e)
+                let params={
+                   pageIndex:e,
+                   pageSize:10
+               }
+                this.$fetch('/product/list',params)
+                .then((res) => {
+                    this.tableData = res.body
+                    console.log(this.tableData)
+                })
+            },
              getData() {
                 let params = {
                     pageIndex: 1,
