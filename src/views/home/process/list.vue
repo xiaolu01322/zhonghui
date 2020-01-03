@@ -174,6 +174,7 @@ export default {
                         if(res.status == 200){
                             this.region1 = res.body.region1
                             this.region2 = res.body.region2
+
                         }
                     })
                 }
@@ -183,25 +184,22 @@ export default {
             regionFirst(){
                 this.formflag = 'first'
                  this.selObjArr = []
+                 this.selObjArr2 = []
                  for(var i=0; i<this.region1.length;i++){
                     for(var j=0;j<this.regionData1.length;j++){
                         if(this.region1[i].id == this.regionData1[j].id){
-                            console.log(111)
                             this.regionData1[j].selected = true
                             this.selObjArr.push(this.regionData1[j]) 
                         }
                       
                     }
                  }
-                
-                console.log(this.selObjArr)
-                
-
-
             },
             regionSecond(){
+                
                 this.formflag = 'second'
                  this.selObjArr2 = []
+                 this.selObjArr = []
                  for(var i=0; i<this.region2.length;i++){
                     for(var j=0;j<this.regionData2.length;j++){
                         if(this.region2[i].id == this.regionData2[j].id){
@@ -220,12 +218,12 @@ export default {
             onSubmitFirst(){
                 this.region1 = this.selObjArr
                 this.formflag = '';
-                this. selObjArr = [];
+                this.selObjArr = [];
             },
             onSubmitSecond(){
                 this.region2 = this.selObjArr2
                 this.formflag = '';
-                this. selObjArr2 = [];
+                this.selObjArr2 = [];
             },
             checkboxChangeFirst(vId){
                 //删除
@@ -307,19 +305,20 @@ export default {
                 }
 
                 this.$post('/process/edit',  params).then(res =>{
-                    // console.log(res,12312312312)
                     this.$message.success("提交成功");
                 } )
             },
-            getData() {
+            getData() { 
                 //获取资金方
                 this.$fetch('/fund-info/list')
                 .then((res) => {
                     this.investor = res.body
                 })
-                //获取所有列表
+                //获取所有列表  由于数组是引用地址所以 需要重复请求分开赋值
                 this.$fetch('/page/allList').then(res => {
                     this.regionData1 = res.body
+                })
+                this.$fetch('/page/allList').then(res => {
                     this.regionData2 = res.body
                 })
             },

@@ -21,7 +21,7 @@
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row.id)">编辑</el-button>
                         <el-button type="text" icon="el-icon-view" @click="handleView(scope.row.id)">查看</el-button>
-                        <el-button type="text" icon="el-icon-delete"  @click="handleDel(scope.row)">删除</el-button>
+                        <el-button type="text" icon="el-icon-delete"  @click="handleDel(scope.row.id)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -60,6 +60,15 @@ export default {
             },
             handleDel(row) {
                 console.log(row);
+                 const params = new FormData();
+                params.append("pageJson", JSON.stringify({
+                    id:row
+                }))
+                this.$post('/page/delete',params)
+                .then((res) => {
+                    console.log(res)
+                })
+
             },
             handleCurrentChange(e){
                 console.log(e)
