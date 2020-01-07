@@ -174,41 +174,45 @@ export default {
                         if(res.status == 200){
                             this.region1 = res.body.region1
                             this.region2 = res.body.region2
-
                         }
                     })
-                }
-                
-                
+                }               
             },
-            regionFirst(){
-                this.formflag = 'first'
-                 this.selObjArr = []
-                 this.selObjArr2 = []
-                 for(var i=0; i<this.region1.length;i++){
-                    for(var j=0;j<this.regionData1.length;j++){
-                        if(this.region1[i].id == this.regionData1[j].id){
-                            this.regionData1[j].selected = true
-                            this.selObjArr.push(this.regionData1[j]) 
-                        }
-                      
+            regionFirst(){               
+                if(!this.formInline.investor){
+                    this.$message.error('请先选择资金方');
+                    return;
+                }
+                this.formflag = 'first';
+                this.selObjArr = [];
+                this.selObjArr2 = [];
+                for(var i=0; i<this.region1.length;i++){
+                for(var j=0;j<this.regionData1.length;j++){
+                    if(this.region1[i].id == this.regionData1[j].id){
+                        this.regionData1[j].selected = true
+                        this.selObjArr.push(this.regionData1[j]) 
                     }
-                 }
+                    
+                }
+                }
             },
             regionSecond(){
-                
-                this.formflag = 'second'
-                 this.selObjArr2 = []
-                 this.selObjArr = []
-                 for(var i=0; i<this.region2.length;i++){
-                    for(var j=0;j<this.regionData2.length;j++){
-                        if(this.region2[i].id == this.regionData2[j].id){
-                            this.regionData2[j].selected = true
-                            this.selObjArr2.push(this.regionData2[j]) 
-                        }
-                      
+                if(!this.formInline.investor){
+                    this.$message.error('请先选择资金方');
+                    return;
+                }
+                this.formflag = 'second';
+                this.selObjArr2 = [];
+                this.selObjArr = [];
+                for(var i=0; i<this.region2.length;i++){
+                for(var j=0;j<this.regionData2.length;j++){
+                    if(this.region2[i].id == this.regionData2[j].id){
+                        this.regionData2[j].selected = true
+                        this.selObjArr2.push(this.regionData2[j]) 
                     }
-                 }
+                    
+                }
+                }
                 
             },
             quit(){
@@ -244,7 +248,7 @@ export default {
                 if(!index){
                      
                     let obj = {};         
-                    obj = this.regionData1.find((item)=>{//这里的funds就是上面遍历的数据源
+                    obj = this.regionData1.find((item)=>{//这里的regionData1就是上面遍历的数据源
                         return item.id === vId;//筛选出匹配数据
                     });
                     this.selObjArr.push(obj) 
@@ -257,7 +261,7 @@ export default {
                  //删除
                 let index = 0;
                 let objDel = {};
-                objDel = this.selObjArr2.find((item)=>{//这里的funds就是上面遍历的数据源
+                objDel = this.selObjArr2.find((item)=>{//这里的selObjArr2就是上面遍历的数据源
                     if (item.id === vId){
                         index++
                     }
@@ -272,7 +276,7 @@ export default {
                 if(!index){
                      
                     let obj = {};         
-                    obj = this.regionData2.find((item)=>{//这里的funds就是上面遍历的数据源
+                    obj = this.regionData2.find((item)=>{//这里的regionData2就是上面遍历的数据源
                         return item.id === vId;//筛选出匹配数据
                     });
                     this.selObjArr2.push(obj) 
@@ -282,8 +286,7 @@ export default {
                  
             },
             checkData(selArr,allArr){
-                for(var j=0;j<allArr.length;j++){
-                        
+                for(var j=0;j<allArr.length;j++){        
                     allArr[j].selected = false
                     this.$set(allArr, j, allArr[j]) 
                 }
@@ -292,14 +295,13 @@ export default {
                         if(selArr[i].id == allArr[j].id){
                             allArr[j].selected = true
                         }
-                        this.$set(allArr, j, allArr[j])
-                      
+                        this.$set(allArr, j, allArr[j])  
                     }
                  }
             },
             pullFn(){
                 const params = {
-                    'fundCode' : this.formInline.investor,
+                    'fundCode':this.formInline.investor,
                     'region1':this.region1,
                     'region2':this.region2
                 }

@@ -239,6 +239,7 @@ export default {
     }
     .table{
         width: 100%;
+        max-width:1200px;
         font-size: 14px;
     }
 </style>
